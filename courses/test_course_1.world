@@ -62,7 +62,7 @@
           <pose>0 0 0 0 -0 0</pose>
           <geometry>
             <mesh>
-              <uri>/home/jean/Pictures/Models/test_courses/test_course_1.stl</uri>
+              <uri>models/test_course_1.stl</uri>
               <scale>0.001 0.001 0.001</scale>
             </mesh>
           </geometry>
@@ -89,7 +89,7 @@
           <pose>0 0 0 0 -0 0</pose>
           <geometry>
             <mesh>
-              <uri>/home/jean/Pictures/Models/test_courses/test_course_1.stl</uri>
+              <uri>models/test_course_1.stl</uri>
               <scale>0.001 0.001 0.001</scale>
             </mesh>
           </geometry>
