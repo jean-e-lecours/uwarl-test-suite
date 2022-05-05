@@ -35,7 +35,7 @@ export TURTLEBOT_MODEL=burger
 
 ### Example
 
-Currently the only test course available is test course 1. To launch the gazebo simulation with the turtlebot 3 burger, navigate to your catking workspace directory and use the following command:
+Currently the only test course available is test course 1. To launch the gazebo simulation with the turtlebot 3 burger, navigate to your catkin workspace directory and use the following command:
 
 ```
 roslaunch uwarl_test_suite turtle_test_1.launch
