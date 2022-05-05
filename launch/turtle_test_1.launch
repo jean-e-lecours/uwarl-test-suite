@@ -6,7 +6,7 @@
     <arg name="open_rviz" default="false"/>
 
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="world_name" value="$(find test_suite)/courses/test_course_1.world"/>
+        <arg name="world_name" value="$(find uwarl_test_suite)/courses/test_course_1.world"/>
         <arg name="paused" value="false"/>
         <arg name="use_sim_time" value="true"/>
         <arg name="gui" value="true"/>
@@ -20,7 +20,7 @@
     <!-- Running topic tools is required because the gazebo imu plugin publishes on /imu and the laser scan only listens to /imu/data! -->
     <!-- <node pkg="topic_tools" type="relay" name="imu_topic_tools" args="/imu /imu/data" /> -->
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
-    <node pkg="map_server" type="map_server" name="map_server" args="$(find test_suite)/courses/maps/test_course_1_grid.yaml"/>
+    <node pkg="map_server" type="map_server" name="map_server" args="$(find uwarl_test_suite)/courses/maps/test_course_1_grid.yaml"/>
     <group if="$(arg open_rviz)"> 
         <!-- node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find plke)/rviz/turtle_test_1.rviz"/ -->
     </group>
