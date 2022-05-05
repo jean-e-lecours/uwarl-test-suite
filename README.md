@@ -16,4 +16,10 @@ catkin_make
 source /opt/ros/noetic/setup.bash
 ```
 
-This will make the launchfiles and
+The launchfiles will then become available from the command line through the package name `uwarl_test_suite`.
+
+To run the turtlebot simulations, the following should be added to your `~/.bashrc` or `~/.zshrc` depending on which one you use:
+
+```
+export TURTLEBOT_MODEL=burger
+```
