@@ -12,9 +12,9 @@
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
     <node pkg="map_server" type="map_server" name="map_server" args="$(find uwarl_test_suite)/courses/maps/clvn_lounge.yaml"/>
     <node pkg="asm" type="asm_node" name="asm_node">
-        <param name="starting_x_pos" type="double" value="x_pos"/>
-        <param name="starting_y_pos" type="double" value="y_pos"/>
-        <param name="starting_rad_or" type="double" value="y_pos"/>
+        <param name="starting_x_pos" type="double" value="(arg x_pos)"/>
+        <param name="starting_y_pos" type="double" value="$(arg y_pos)"/>
+        <param name="starting_rad_or" type="double" value="$(arg y_pos)"/>
     </node>
     <group if="$(arg open_rviz)"> 
         <!-- node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find plke)/rviz/turtle_test_1.rviz"/ -->
