@@ -1,7 +1,7 @@
 <launch>
     <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
-    <arg name="x_pos" default="0.25"/>
-    <arg name="y_pos" default="0.25"/>
+    <arg name="x_pos" default="-10.0"/>
+    <arg name="y_pos" default="-10.0"/>
     <arg name="t_pos" default="0.0"/>
     <arg name="open_rviz" default="false"/>
 
@@ -10,7 +10,7 @@
     <!-- Running topic tools is required because the gazebo imu plugin publishes on /imu and the laser scan only listens to /imu/data! -->
     <!-- <node pkg="topic_tools" type="relay" name="imu_topic_tools" args="/imu /imu/data" /> -->
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
-    <node pkg="map_server" type="map_server" name="map_server" args="$(find uwarl_test_suite)/courses/maps/e7-3.yaml"/>
+    <node pkg="map_server" type="map_server" name="map_server" args="$(find uwarl_test_suite)/courses/maps/clvn_lounge.yaml"/>
     <node pkg="asm" type="asm_node" name="asm_node">
         <param name="starting_x_pos" type="double" value="x_pos"/>
         <param name="starting_y_pos" type="double" value="y_pos"/>
