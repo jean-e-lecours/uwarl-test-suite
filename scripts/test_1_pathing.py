@@ -8,7 +8,7 @@ from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Vector3
 from geometry_msgs.msg import Pose2D
 from geometry_msgs.msg import PoseWithCovarianceStamped
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import PoseStamped
 from gazebo_msgs.msg import ModelStates
 from nav_msgs.msg import Odometry
 
@@ -42,9 +42,9 @@ def odom_callback(message):
     pose_odom[2] = 360*math.atan2(2*(qr*q3+q1*q2),qr*qr+q1*q1-q2*q2-q3*q3)/(2*math.pi)
 def asm_callback(message):
     old_asm = pose_asm[0]
-    pose_asm[0] = message.position.x
-    pose_asm[1] = message.position.y
-    q1,q2,q3,qr = message.orientation.x, message.orientation.y, message.orientation.z, message.orientation.w
+    pose_asm[0] = message.pose.position.x
+    pose_asm[1] = message.pose.position.y
+    q1,q2,q3,qr = message.pose.orientation.x, message.pose.orientation.y, message.pose.orientation.z, message.pose.orientation.w
     pose_asm[2] = 360*math.atan2(2*(qr*q3+q1*q2),qr*qr+q1*q1-q2*q2-q3*q3)/(2*math.pi)
     if old_asm != pose_asm[0]:
         new_data[1] = True
@@ -62,7 +62,7 @@ def main():
     rospy.Subscriber("odom", Odometry, odom_callback)
     rospy.Subscriber("pose2D", Pose2D, laser_callback)
     rospy.Subscriber("gmcl_pose", PoseWithCovarianceStamped, amcl_callback)
-    rospy.Subscriber("scan_pos", Pose, asm_callback)
+    rospy.Subscriber("asm_pos", PoseStamped, asm_callback)
     rospy.init_node('path', anonymous=True)
 
     command = Twist(Vector3(0.15,0,0),Vector3(0,0,0))
