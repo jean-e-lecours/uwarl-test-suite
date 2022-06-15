@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from cmath import inf
 import math
 import time
 
@@ -8,17 +9,24 @@ from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Vector3
 from geometry_msgs.msg import Pose2D
 from geometry_msgs.msg import PoseWithCovarianceStamped
+from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import PoseStamped
 from gazebo_msgs.msg import ModelStates
 from nav_msgs.msg import Odometry
 
 pose_gazebo = [0,0,0]
+
 pose_odom = [0,0,0]
 quat_odom = [0,0,0,0]
 pose_laser = [0,0,0]
 pose_amcl = [0,0,0]
 pose_asm = [0,0,0]
 new_data = [False, False]
+
+""" def scan_callback(message):
+    if pose_gazebo[1] < 0.9 and pose_gazebo[1] > 0.85:
+        print(message.ranges)
+        print(pose_gazebo) """
 
 def laser_callback(message):
     old_laser = pose_laser[0]
@@ -49,6 +57,7 @@ def asm_callback(message):
     if old_asm != pose_asm[0]:
         new_data[1] = True
 def gazebo_callback(message):
+    old_pose_gazebo = pose_gazebo
     pose_gazebo[0] = message.pose[1].position.x
     pose_gazebo[1] = message.pose[1].position.y
     q1,q2,q3,qr = message.pose[1].orientation.x, message.pose[1].orientation.y, message.pose[1].orientation.z, message.pose[1].orientation.w
@@ -57,7 +66,10 @@ def gazebo_callback(message):
 def main():
     step = 0
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+
+    old_pose_gazebo = [0,0,0]
     
+    #rospy.Subscriber("scan", LaserScan, scan_callback)
     rospy.Subscriber("gazebo/model_states", ModelStates, gazebo_callback)
     rospy.Subscriber("odom", Odometry, odom_callback)
     rospy.Subscriber("pose2D", Pose2D, laser_callback)
@@ -86,11 +98,18 @@ def main():
         else:
             corrected_las_t = pose_laser[2]   
         
-        gazebo_dataline = str(k) + ',' + str(pose_gazebo[0]) + ',' + str(pose_gazebo[1]) + ',' +  str(corrected_gaz_t)
-        odom_dataline =  str(pose_odom[0]) + ',' + str(pose_odom[1]) + ',' +  str(pose_odom[2]) + ',' +  str(pose_odom[0] - pose_gazebo[0]) + ',' +  str(pose_odom[1] - pose_gazebo[1]) + ',' +  str(corrected_od_t - corrected_gaz_t)
-        laser_dataline = str(pose_laser[0]) + ',' + str(pose_laser[1]) + ',' +  str(corrected_las_t) + ',' +  str(pose_laser[0] - pose_gazebo[0]) + ',' +  str(pose_laser[1] - pose_gazebo[1]) + ',' +  str(corrected_las_t - corrected_gaz_t)
-        asm_dataline = str(pose_asm[0]) + ',' + str(pose_asm[1]) + ',' +  str(pose_asm[2]) + ',' +  str(pose_asm[0] - pose_gazebo[0]) + ',' +  str(pose_asm[1] - pose_gazebo[1]) + ',' +  str(pose_asm[2] - corrected_gaz_t)
+        #asmd = ((pose_gazebo[1]-old_pose_gazebo[1])*pose_asm[0] + (pose_gazebo[0]-old_pose_gazebo[0])*pose_asm[1])/math.sqrt((pose_gazebo[0] - old_pose_gazebo[0])**2+(pose_gazebo[1] - old_pose_gazebo[1])**2)
         
+        gazebo_dataline = str(k) + ',' + str(pose_gazebo[0]) + ',' + str(pose_gazebo[1]) + ',' +  str(corrected_gaz_t)
+
+        odom_dataline =  str(pose_odom[0]) + ',' + str(pose_odom[1]) + ',' +  str(pose_odom[2]) + ',' +  str(pose_odom[0] - pose_gazebo[0]) + ',' +  str(pose_odom[1] - pose_gazebo[1]) + ',' +  str(corrected_od_t - corrected_gaz_t)
+
+        laser_dataline = str(pose_laser[0]) + ',' + str(pose_laser[1]) + ',' +  str(corrected_las_t) + ',' +  str(pose_laser[0] - pose_gazebo[0]) + ',' +  str(pose_laser[1] - pose_gazebo[1]) + ',' +  str(corrected_las_t - corrected_gaz_t)
+        
+        asm_dataline = str(pose_asm[0]) + ',' + str(pose_asm[1]) + ',' +  str(pose_asm[2]) + ',' +  str(pose_asm[0] - old_pose_gazebo[0]) + ',' +  str(pose_asm[1] - old_pose_gazebo[1]) + ',' +  str(pose_asm[2] - corrected_gaz_t)
+        
+        old_pose_gazebo = pose_gazebo
+
         if new_data[0]:
             dataline = gazebo_dataline + ',' + odom_dataline + ',' + laser_dataline + '\n'
             file_asm.write(dataline)
