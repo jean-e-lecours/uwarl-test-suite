@@ -16,6 +16,8 @@ from nav_msgs.msg import Odometry
 
 pose_gazebo = [0,0,0]
 
+old_asm = [0,0,0]
+
 pose_odom = [0,0,0]
 quat_odom = [0,0,0,0]
 pose_laser = [0,0,0]
@@ -23,10 +25,11 @@ pose_amcl = [0,0,0]
 pose_asm = [0,0,0]
 new_data = [False, False]
 
-""" def scan_callback(message):
-    if pose_gazebo[1] < 0.9 and pose_gazebo[1] > 0.85:
+def scan_callback(message):
+    if pose_asm[0] > 5 or pose_asm[1] > 5:
+        print(old_asm)
         print(message.ranges)
-        print(pose_gazebo) """
+        print(pose_gazebo)
 
 def laser_callback(message):
     old_laser = pose_laser[0]
@@ -49,12 +52,14 @@ def odom_callback(message):
     q1,q2,q3,qr = message.pose.pose.orientation.x, message.pose.pose.orientation.y, message.pose.pose.orientation.z, message.pose.pose.orientation.w
     pose_odom[2] = 360*math.atan2(2*(qr*q3+q1*q2),qr*qr+q1*q1-q2*q2-q3*q3)/(2*math.pi)
 def asm_callback(message):
-    old_asm = pose_asm[0]
+    old_asm[0] = pose_asm[0]
+    old_asm[1] = pose_asm[1]
+    old_asm[2] = pose_asm[2]
     pose_asm[0] = message.pose.position.x
     pose_asm[1] = message.pose.position.y
     q1,q2,q3,qr = message.pose.orientation.x, message.pose.orientation.y, message.pose.orientation.z, message.pose.orientation.w
     pose_asm[2] = 360*math.atan2(2*(qr*q3+q1*q2),qr*qr+q1*q1-q2*q2-q3*q3)/(2*math.pi)
-    if old_asm != pose_asm[0]:
+    if old_asm[0] != pose_asm[0]:
         new_data[1] = True
 def gazebo_callback(message):
     old_pose_gazebo = pose_gazebo
@@ -69,7 +74,7 @@ def main():
 
     old_pose_gazebo = [0,0,0]
     
-    #rospy.Subscriber("scan", LaserScan, scan_callback)
+    rospy.Subscriber("scan", LaserScan, scan_callback)
     rospy.Subscriber("gazebo/model_states", ModelStates, gazebo_callback)
     rospy.Subscriber("odom", Odometry, odom_callback)
     rospy.Subscriber("pose2D", Pose2D, laser_callback)
