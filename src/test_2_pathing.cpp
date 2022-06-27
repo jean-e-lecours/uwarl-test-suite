@@ -136,6 +136,8 @@ int main(int argc, char **argv){
     double desired_heading = 0;
     int k = 0;
 
+    ROS_INFO("Starting test!");
+
     while (ros::ok()) {
 
         std::string gtruth_dataline = std::to_string(k) + ',' + std::to_string(poses.gtruth_pose[0]) + ',' + std::to_string(poses.gtruth_pose[1]) + ',' + std::to_string(poses.gtruth_pose[2]);
