@@ -47,10 +47,10 @@ class LaserSubscriber{
     static bool ready;
 
     static void laser_callback(const sensor_msgs::LaserScan::ConstPtr &msg){
-        for (int i = 0; i < msg->ranges.size()-1; i++){
-            las_string = las_string + std::to_string(msg->ranges[i]) + ",";
+        for (int i = 0; i < msg->ranges.size()-2; i++){
+            las_string = las_string + std::to_string(msg->ranges[i]) + ", ";
         }
-        las_string = las_string + std::to_string(msg->ranges[msg->ranges.size()]) + "\n";
+        las_string = las_string + std::to_string(msg->ranges[msg->ranges.size()-1]) + "\n";
         las_ready = true;
     }
     LaserSubscriber(ros::NodeHandle n){
@@ -86,11 +86,12 @@ class GTruthSubscriber{
     ros::Subscriber sub;
     public:
         static void gt_callback(const gazebo_msgs::ModelStates::ConstPtr &msg){
-            double gtruth_angle = atan2(2*(msg->pose.data()->orientation.w * msg->pose.data()->orientation.z + msg->pose.data()->orientation.x * msg->pose.data()->orientation.y),
-                            msg->pose.data()->orientation.w*msg->pose.data()->orientation.w + msg->pose.data()->orientation.x*msg->pose.data()->orientation.x 
-                            - msg->pose.data()->orientation.y*msg->pose.data()->orientation.y - msg->pose.data()->orientation.z*msg->pose.data()->orientation.z);
-            poses.gt_pose[0] = msg->pose.data()->position.x;
-            poses.gt_pose[1] = msg->pose.data()->position.y;
+            //WILL NEED TO CHANGE THE INDEX IF MORE MODELS ARE ADDED!
+            double gtruth_angle = atan2(2*(msg->pose[1].orientation.w * msg->pose[1].orientation.z + msg->pose[1].orientation.x * msg->pose[1].orientation.y),
+                            msg->pose[1].orientation.w*msg->pose[1].orientation.w + msg->pose[1].orientation.x*msg->pose[1].orientation.x 
+                            - msg->pose[1].orientation.y*msg->pose[1].orientation.y - msg->pose[1].orientation.z*msg->pose[1].orientation.z);
+            poses.gt_pose[0] = msg->pose[1].position.x;
+            poses.gt_pose[1] = msg->pose[1].position.y;
             poses.gt_pose[2] = 360*gtruth_angle/(2*M_PI);
             gt_string = gt_string + "[" + std::to_string(poses.gt_pose[0]) + ", " + std::to_string(poses.gt_pose[1]) + ", " + std::to_string(poses.gt_pose[2]) + "]\n";
             gt_ready = true;

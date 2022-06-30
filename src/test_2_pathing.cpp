@@ -111,7 +111,7 @@ int main(int argc, char **argv){
     //Starting ROS node
     ros::init(argc, argv, "evaluator");
     ros::NodeHandle n;
-    ros::Rate rate(10);
+    ros::Rate rate(50);
 
     //Setting up parameters
     params.v_lin = n.param<double>("max_linear_velocity", 0.15);
